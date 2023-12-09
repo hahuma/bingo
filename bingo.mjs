@@ -1,21 +1,12 @@
 import readline from "readline";
-
-const firstInitText = `
-  Olá, seja bem vindo ao seu verificador de bingo!
-`;
-
-const validCommands = `
-  Lista de comandos aceitos:
-  - mark <number>
-  - unmark <number>
-  - show <total|left|mine>
-`;
-
-const SUPPORTED_ACTIONS = {
-  TOTAL: "total",
-  LEFT: "left",
-  MINE: "mine",
-};
+import { showCommandOptions } from "./commands/show.mjs";
+import { cartelaToArray } from "./helpers/cartelaToArray.mjs";
+import { initBingoText, validCommands } from "./helpers/initBingoText.mjs";
+import {
+  handleMarkErrors,
+  handleShowErrors,
+  handleUnmarkErrors,
+} from "./errors/handlers.mjs";
 
 const cartela = {
   b: [3, 11, 12, 1, 15],
@@ -34,33 +25,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-console.clear();
-process.stdout.write(firstInitText);
-process.stdout.write(validCommands);
-
-function showTotal() {
-  console.log(cartela);
-}
-
-function showLeft() {
-  const cartelaAsArray = cartelaToArray(cartela);
-
-  const left = cartelaAsArray.filter(
-    (value) => hasMarked.indexOf(value) === -1
-  );
-
-  console.log("Restam os seguintes valores:", left);
-}
-
-function showMine() {
-  const cartelaAsArray = cartelaToArray(cartela);
-
-  const mine = cartelaAsArray.filter(
-    (value) => hasMarked.indexOf(value) !== -1
-  );
-
-  console.log("Meus valores já marcados:", mine);
-}
+initBingoText();
 
 rl.on("line", (input) => {
   if (!input || input.length === 0 || input.split(" ").length !== 2) {
@@ -70,17 +35,6 @@ rl.on("line", (input) => {
 
   const [command, arg] = input.split(" ");
 
-  function cartelaToArray(cartela) {
-    const cartelaKeys = Object.values(cartela);
-    const data = cartelaKeys.reduce((prev, curr) => {
-      curr.forEach((value) => prev.push(value));
-
-      return prev;
-    }, []);
-
-    return data;
-  }
-
   switch (command) {
     case "mark": {
       const cartelaAsArray = cartelaToArray(cartela);
@@ -88,20 +42,9 @@ rl.on("line", (input) => {
 
       console.clear();
 
-      if (isNaN(value)) {
-        console.log("Valor inválido");
-        break;
-      }
+      const hasErrors = handleMarkErrors(+arg, cartelaAsArray, hasMarked);
 
-      if (cartelaAsArray.indexOf(value) === -1) {
-        console.log("Seu bingo não tem esse número");
-        break;
-      }
-
-      if (hasMarked.indexOf(value) !== -1) {
-        console.log("Valor já selecionado");
-        break;
-      }
+      if (hasErrors) break;
 
       hasMarked.push(value);
       totalMarked = totalMarked + 1;
@@ -122,20 +65,9 @@ rl.on("line", (input) => {
 
       console.clear();
 
-      if (isNaN(value)) {
-        console.log("Valor inválido");
-        break;
-      }
+      const hasErrors = handleUnmarkErrors(+arg, cartelaAsArray, hasMarked);
 
-      if (cartelaAsArray.indexOf(value) === -1) {
-        console.log("Seu bingo não tem esse número");
-        break;
-      }
-
-      if (hasMarked.indexOf(value) === -1) {
-        console.log("Valor não foi selecionado ainda");
-        break;
-      }
+      if (hasErrors) break;
 
       hasMarked = hasMarked.filter((markedValue) => markedValue !== value);
       totalMarked = totalMarked - 1;
@@ -147,23 +79,11 @@ rl.on("line", (input) => {
     case "show": {
       console.clear();
 
-      if (
-        arg !== SUPPORTED_ACTIONS.TOTAL &&
-        arg !== SUPPORTED_ACTIONS.LEFT &&
-        arg !== SUPPORTED_ACTIONS.MINE
-      ) {
-        console.log(`O comando ${arg} é inválido`);
+      const hasErrors = handleShowErrors(arg);
 
-        break;
-      }
+      if (hasErrors) break;
 
-      const options = {
-        [SUPPORTED_ACTIONS.TOTAL]: showTotal,
-        [SUPPORTED_ACTIONS.LEFT]: showLeft,
-        [SUPPORTED_ACTIONS.MINE]: showMine,
-      };
-
-      options[arg]();
+      showCommandOptions[arg](cartela, hasMarked);
       break;
     }
   }
