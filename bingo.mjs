@@ -1,5 +1,22 @@
 import readline from "readline";
 
+const firstInitText = `
+  Olá, seja bem vindo ao seu verificador de bingo!
+`;
+
+const validCommands = `
+  Lista de comandos aceitos:
+  - mark <number>
+  - unmark <number>
+  - show <total|left|mine>
+`;
+
+const SUPPORTED_ACTIONS = {
+  TOTAL: "total",
+  LEFT: "left",
+  MINE: "mine",
+};
+
 const cartela = {
   b: [3, 11, 12, 1, 15],
   i: [27, 16, 17, 26, 18],
@@ -17,15 +34,38 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+console.clear();
+process.stdout.write(firstInitText);
+process.stdout.write(validCommands);
+
+function showTotal() {
+  console.log(cartela);
+}
+
+function showLeft() {
+  const cartelaAsArray = cartelaToArray(cartela);
+
+  const left = cartelaAsArray.filter(
+    (value) => hasMarked.indexOf(value) === -1
+  );
+
+  console.log("Restam os seguintes valores:", left);
+}
+
+function showMine() {
+  const cartelaAsArray = cartelaToArray(cartela);
+
+  const mine = cartelaAsArray.filter(
+    (value) => hasMarked.indexOf(value) !== -1
+  );
+
+  console.log("Meus valores já marcados:", mine);
+}
+
 rl.on("line", (input) => {
   if (!input || input.length === 0 || input.split(" ").length !== 2) {
     console.log("Digite um comando válido.");
-    console.log(`
-    Lista de comandos aceitos:
-    - mark <number>
-    - unmark <number>
-    - show <total|left|mine>
-    `);
+    console.log(validCommands);
   }
 
   const [command, arg] = input.split(" ");
@@ -45,6 +85,8 @@ rl.on("line", (input) => {
     case "mark": {
       const cartelaAsArray = cartelaToArray(cartela);
       const value = +arg;
+
+      console.clear();
 
       if (isNaN(value)) {
         console.log("Valor inválido");
@@ -78,6 +120,8 @@ rl.on("line", (input) => {
       const cartelaAsArray = cartelaToArray(cartela);
       const value = +arg;
 
+      console.clear();
+
       if (isNaN(value)) {
         console.log("Valor inválido");
         break;
@@ -89,7 +133,7 @@ rl.on("line", (input) => {
       }
 
       if (hasMarked.indexOf(value) === -1) {
-        console.log("Valor não foi selecionado");
+        console.log("Valor não foi selecionado ainda");
         break;
       }
 
@@ -97,6 +141,29 @@ rl.on("line", (input) => {
       totalMarked = totalMarked - 1;
 
       console.log("Seus itens marcados", hasMarked);
+      break;
+    }
+
+    case "show": {
+      console.clear();
+
+      if (
+        arg !== SUPPORTED_ACTIONS.TOTAL &&
+        arg !== SUPPORTED_ACTIONS.LEFT &&
+        arg !== SUPPORTED_ACTIONS.MINE
+      ) {
+        console.log(`O comando ${arg} é inválido`);
+
+        break;
+      }
+
+      const options = {
+        [SUPPORTED_ACTIONS.TOTAL]: showTotal,
+        [SUPPORTED_ACTIONS.LEFT]: showLeft,
+        [SUPPORTED_ACTIONS.MINE]: showMine,
+      };
+
+      options[arg]();
       break;
     }
   }
