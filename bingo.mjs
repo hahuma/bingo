@@ -72,7 +72,7 @@ rl.on("line", (input) => {
         break;
       }
 
-      break;const
+      break;
     }
     case "unmark": {
       const cartelaAsArray = cartelaToArray(cartela);
