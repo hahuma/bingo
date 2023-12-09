@@ -1,4 +1,4 @@
-import { cartelaToArray } from "../helpers/cartelaToArray.mjs";
+import { bingoCardToArray } from "../helpers/bingoCardToArray.mjs";
 
 const SUPPORTED_ACTIONS = {
   TOTAL: "total",
@@ -6,24 +6,24 @@ const SUPPORTED_ACTIONS = {
   MINE: "mine",
 };
 
-function showTotal(cartela) {
-  console.log(cartela);
+function showTotal(bingoCard) {
+  console.log(bingoCard);
 }
 
-function showLeft(cartela, hasMarked = []) {
-  const cartelaAsArray = cartelaToArray(cartela);
+function showLeft(bingoCard, hasMarked = []) {
+  const bingoCardAsArray = bingoCardToArray(bingoCard);
 
-  const left = cartelaAsArray.filter(
+  const left = bingoCardAsArray.filter(
     (value) => hasMarked.indexOf(value) === -1
   );
 
   console.log("Restam os seguintes valores:", left);
 }
 
-function showMine(cartela, hasMarked = []) {
-  const cartelaAsArray = cartelaToArray(cartela);
+function showMine(bingoCard, hasMarked = []) {
+  const bingoCardAsArray = bingoCardToArray(bingoCard);
 
-  const mine = cartelaAsArray.filter(
+  const mine = bingoCardAsArray.filter(
     (value) => hasMarked.indexOf(value) !== -1
   );
 

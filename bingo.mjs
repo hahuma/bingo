@@ -1,6 +1,6 @@
 import readline from "readline";
 import { showCommandOptions } from "./commands/show.mjs";
-import { cartelaToArray } from "./helpers/cartelaToArray.mjs";
+import { bingoCardToArray } from "./helpers/bingoCardToArray.mjs";
 import { initBingoText, validCommands } from "./helpers/initBingoText.mjs";
 import {
   handleMainCommandsErrors,
@@ -9,7 +9,7 @@ import {
   handleUnmarkErrors,
 } from "./errors/handlers.mjs";
 
-const cartela = {
+const bingoCard = {
   b: [3, 11, 12, 1, 15],
   i: [27, 16, 17, 26, 18],
   n: [40, 36, 42, 41, 35],
@@ -43,12 +43,12 @@ rl.on("line", (input) => {
 
   switch (command) {
     case "mark": {
-      const cartelaAsArray = cartelaToArray(cartela);
+      const bingoCardAsArray = bingoCardToArray(bingoCard);
       const value = +arg;
 
       console.clear();
 
-      const hasErrors = handleMarkErrors(+arg, cartelaAsArray, hasMarked);
+      const hasErrors = handleMarkErrors(+arg, bingoCardAsArray, hasMarked);
 
       if (hasErrors) break;
 
@@ -66,12 +66,12 @@ rl.on("line", (input) => {
       break;
     }
     case "unmark": {
-      const cartelaAsArray = cartelaToArray(cartela);
+      const bingoCardAsArray = bingoCardToArray(bingoCard);
       const value = +arg;
 
       console.clear();
 
-      const hasErrors = handleUnmarkErrors(+arg, cartelaAsArray, hasMarked);
+      const hasErrors = handleUnmarkErrors(+arg, bingoCardAsArray, hasMarked);
 
       if (hasErrors) break;
 
@@ -89,7 +89,7 @@ rl.on("line", (input) => {
 
       if (hasErrors) break;
 
-      showCommandOptions[arg](cartela, hasMarked);
+      showCommandOptions[arg](bingoCard, hasMarked);
       break;
     }
   }

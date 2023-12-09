@@ -1,7 +1,7 @@
 import { MAIN_COMMANDS } from "../commands/main.mjs";
 import { SUPPORTED_ACTIONS } from "../commands/show.mjs";
 
-function handleMarkErrors(value, cartelaArray, hasMarked) {
+function handleMarkErrors(value, bingoCardArray, hasMarked) {
   let hasErrors = false;
 
   if (isNaN(value)) {
@@ -9,7 +9,7 @@ function handleMarkErrors(value, cartelaArray, hasMarked) {
     hasErrors = true;
   }
 
-  if (!hasErrors && cartelaArray.indexOf(value) === -1) {
+  if (!hasErrors && bingoCardArray.indexOf(value) === -1) {
     console.log("Seu bingo não tem esse número");
     hasErrors = true;
   }
@@ -22,7 +22,7 @@ function handleMarkErrors(value, cartelaArray, hasMarked) {
   return hasErrors;
 }
 
-function handleUnmarkErrors(value, cartelaArray, hasMarked) {
+function handleUnmarkErrors(value, bingoCardArray, hasMarked) {
   let hasErrors = false;
 
   if (isNaN(value)) {
@@ -30,7 +30,7 @@ function handleUnmarkErrors(value, cartelaArray, hasMarked) {
     hasErrors = true;
   }
 
-  if (!hasErrors && cartelaArray.indexOf(value) === -1) {
+  if (!hasErrors && bingoCardArray.indexOf(value) === -1) {
     console.log("Seu bingo não tem esse número");
     hasErrors = true;
   }
