@@ -3,6 +3,7 @@ import { showCommandOptions } from "./commands/show.mjs";
 import { cartelaToArray } from "./helpers/cartelaToArray.mjs";
 import { initBingoText, validCommands } from "./helpers/initBingoText.mjs";
 import {
+  handleMainCommandsErrors,
   handleMarkErrors,
   handleShowErrors,
   handleUnmarkErrors,
@@ -34,6 +35,11 @@ rl.on("line", (input) => {
   }
 
   const [command, arg] = input.split(" ");
+
+  console.clear();
+  const hasError = handleMainCommandsErrors(command);
+
+  if (hasError) return;
 
   switch (command) {
     case "mark": {

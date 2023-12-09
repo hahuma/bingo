@@ -1,3 +1,4 @@
+import { MAIN_COMMANDS } from "../commands/main.mjs";
 import { SUPPORTED_ACTIONS } from "../commands/show.mjs";
 
 function handleMarkErrors(value, cartelaArray, hasMarked) {
@@ -58,4 +59,25 @@ function handleShowErrors(value) {
   return hasErrors;
 }
 
-export { handleMarkErrors, handleUnmarkErrors, handleShowErrors };
+function handleMainCommandsErrors(command) {
+  let hasErrors = false;
+
+  if (
+    command !== MAIN_COMMANDS.MARK &&
+    command !== MAIN_COMMANDS.UNMARK &&
+    command !== MAIN_COMMANDS.SHOW
+  ) {
+    console.log(`O comando ${command} é inválido`);
+
+    hasErrors = true;
+  }
+
+  return hasErrors;
+}
+
+export {
+  handleMarkErrors,
+  handleUnmarkErrors,
+  handleShowErrors,
+  handleMainCommandsErrors,
+};
